@@ -30,6 +30,7 @@ SRC 			:= ./src/cub3d.c\
 					./src/hookkey.c\
 					./src/draw.c\
 					./src/utilsdraw.c\
+					./src/move.c
 
 
 

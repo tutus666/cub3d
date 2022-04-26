@@ -11,18 +11,12 @@ void ft_handle_rota_left(t_data *env)
 {
 	env->player->angle += 5;
 	env->player->angle = fixAng(env->player->angle);
-	printf("ton angle vaut %f \n", env->player->angle);
-	env->player->pdx = cos(degToRad(env->player->angle));
-	env->player->pdy = -sin(degToRad(env->player->angle));
 }
 
 void ft_handle_rota_right(t_data *env)
 {
 	env->player->angle -= 5;
 	env->player->angle = fixAng(env->player->angle);
-	printf("ton angle vaut %f \n", env->player->angle);
-	env->player->pdx = cos(degToRad(env->player->angle));
-	env->player->pdy = -sin(degToRad(env->player->angle));
 }
 
 int holdkey(int keycode, t_data *env)
@@ -34,6 +28,14 @@ int holdkey(int keycode, t_data *env)
 		ft_handle_rota_left(env);
 	else if (keycode == 14)
 		ft_handle_rota_right(env);
+	else if (keycode == 13) // up
+        ft_move_up(env, 0);
+    else if (keycode == 0) // right
+        ft_move_left(env, 0);
+    else if (keycode == 1)    // down
+        ft_move_down(env, 0);
+    else if (keycode == 2)// left
+        ft_move_left(env, 0);
     ft_draw(env);
     return (0);
 }

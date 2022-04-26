@@ -160,6 +160,10 @@ int 	ft_return_nb_of_line(int fd, char *line);
 // holdkey
 int 	ft_cleanup(t_data *env);
 int 	holdkey(int keycode, t_data *env);
+void ft_move_up(t_data *env, int vitesse);
+void ft_move_left(t_data *env, int vitesse);
+void ft_move_right(t_data *env, int vitesse);
+void ft_move_down(t_data *env, int vitesse);
 
 // drawpart
 void            ft_draw(t_data *env);

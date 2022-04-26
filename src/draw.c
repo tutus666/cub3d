@@ -310,7 +310,7 @@ void	ft_init_draw(t_data *env)
 	env->draw->centerx = env->draw->sizemax / 2;
 	env->draw->centery = env->draw->heightmax / 2;
 	env->draw->angle = 60;
-	env->draw->distancetoplane = env->draw->centerx / tan(env->draw->angle);
+	env->draw->distancetoplane = env->draw->centerx / tan(degToRad(env->draw->angle));
 	env->draw->sizeangle = (float)env->draw->angle / (float)env->draw->sizemax;
 }
 
@@ -337,17 +337,17 @@ float	ft_return_distance_horizontal(t_data *env, float angle)
 		y = env->player->x * SIZE + SIZE;
 	}
 	x = env->player->y * SIZE + (env->player->x * SIZE - y) / tan(degToRad(angle));
-	printf("xa = %d ya = %d\n", xa, ya);
-	printf("x = %d y = %d\n", x / SIZE, y / SIZE);
+	// printf("xa = %d ya = %d\n", xa, ya);
+	// printf("x = %d y = %d\n", x / SIZE, y / SIZE);
 	while (x > 0 && y > 0 && x / SIZE < 9 && y / SIZE < 6 && env->map[y / SIZE][x / SIZE] != '1')
 	{
-		fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
-		fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
+		// fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
+		// fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
 		x += xa;
 		y += ya;
 	}
-	fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
-	fprintf(stderr, "Distance h = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
+	// fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
+	// fprintf(stderr, "Distance h = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
 	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x * SIZE - y, 2)));
 }
 
@@ -374,17 +374,17 @@ float ft_return_distance_vertical(t_data *env, float angle)
 		x = env->player->y * SIZE + SIZE;
 	}
 	y = env->player->x * SIZE + (env->player->y * SIZE - x) * tan(degToRad(angle));
-	printf("xa = %d ya = %d\n", xa, ya);
-	printf("x = %d y = %d\n", x / SIZE, y / SIZE);
+	//printf("xa = %d ya = %d\n", xa, ya);
+	//printf("x = %d y = %d\n", x / SIZE, y / SIZE);
 	while (x > 0 && y > 0 && x / SIZE < 9 && y / SIZE < 6 && env->map[y / SIZE][x / SIZE] != '1')
 	{
 		x += xa;
 		y += ya;
-		fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
-		fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
+		//fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
+		//fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
 	}
-	fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
-	fprintf(stderr, "Distance v = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
+	//fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
+	//fprintf(stderr, "Distance v = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
 	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x * SIZE - y, 2)));
 }
 
@@ -423,9 +423,9 @@ void ft_draw(t_data *env)
 	t_img	img;
 	t_draw	raycast;
 	int		x;
-	int		d;
-	float	h;
+	float	d;
 	float	a;
+	double	h;
 
 	env->img = &img;
 	env->draw = &raycast;
@@ -437,11 +437,15 @@ void ft_draw(t_data *env)
 	x = env->draw->sizemax;
 	while (x--)
 	{
-		printf("ray number %d with angle %f\n", x, fixAng(env->player->angle + a));
+		// printf("ray number %d with angle %f\n", x, fixAng(env->player->angle + a));
 		d = ft_give_distance(env, fixAng(env->player->angle + a));
-		fprintf(stderr, "distorted distance = %d\n", d);
-		h = SIZE / (float)d * env->draw->distancetoplane;
-		printf("h = %f\n", h);
+		// printf("distorted distance = %f\n", d);
+		d = d * cos(degToRad(fixAng(a)));
+		// printf("correct distance = %f\n", d);
+		h = SIZE / d * env->draw->distancetoplane;
+		// printf("h = %f\n", h);
+		h = ceil(h);
+		// printf("roundup h = %f\n", h);
 		draw_col(env, x, h);
 		a += env->draw->sizeangle;
 	}
