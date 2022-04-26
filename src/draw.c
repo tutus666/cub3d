@@ -339,16 +339,16 @@ float	ft_return_distance_horizontal(t_data *env, float angle)
 	x = env->player->y * SIZE + (env->player->x * SIZE - y) / tan(degToRad(angle));
 	printf("xa = %d ya = %d\n", xa, ya);
 	printf("x = %d y = %d\n", x / SIZE, y / SIZE);
-	while (x > 0 && y > 0 && x / SIZE < 32 && y / SIZE < 33 && env->map[y / SIZE][x / SIZE] != '1')
+	while (x > 0 && y > 0 && x / SIZE < 9 && y / SIZE < 6 && env->map[y / SIZE][x / SIZE] != '1')
 	{
-		printf("coord : x = %d y = %d\n", x / SIZE, y / SIZE);
-		printf("pxl   : x = %d y = %d\n", x, y);
+		fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
+		fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
 		x += xa;
 		y += ya;
 	}
-	printf("HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
-	printf("Distance h = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
-	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2)));
+	fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
+	fprintf(stderr, "Distance h = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
+	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x * SIZE - y, 2)));
 }
 
 float ft_return_distance_vertical(t_data *env, float angle)
@@ -376,16 +376,16 @@ float ft_return_distance_vertical(t_data *env, float angle)
 	y = env->player->x * SIZE + (env->player->y * SIZE - x) * tan(degToRad(angle));
 	printf("xa = %d ya = %d\n", xa, ya);
 	printf("x = %d y = %d\n", x / SIZE, y / SIZE);
-	while (x > 0 && y > 0 && x / SIZE < 32 && y / SIZE < 33 && env->map[y / SIZE][x / SIZE] != '1')
+	while (x > 0 && y > 0 && x / SIZE < 9 && y / SIZE < 6 && env->map[y / SIZE][x / SIZE] != '1')
 	{
 		x += xa;
 		y += ya;
-		printf("coord : x = %d y = %d\n", x / SIZE, y / SIZE);
-		printf("pxl   : x = %d y = %d\n", x, y);
+		fprintf(stderr, "coord : x = %d y = %d\n", x / SIZE, y / SIZE);
+		fprintf(stderr, "pxl   : x = %d y = %d\n", x, y);
 	}
-	printf("HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
-	printf("Distance v = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
-	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2)));
+	fprintf(stderr, "HIT WALL @ x = %d y = %d\n", x / SIZE, y / SIZE);
+	fprintf(stderr, "Distance v = %f\n", sqrt((pow(env->player->y * SIZE - x, 2) + pow(env->player->x - y, 2))));
+	return (sqrt(pow(env->player->y * SIZE - x, 2) + pow(env->player->x * SIZE - y, 2)));
 }
 
 float ft_give_distance(t_data *env, float angle)
@@ -395,9 +395,27 @@ float ft_give_distance(t_data *env, float angle)
 
 	distance_h = ft_return_distance_horizontal(env, angle);
 	distance_v = ft_return_distance_vertical(env, angle);
-	if (distance_h < distance_v)
+	if (distance_h <= distance_v)
 		return (distance_h);
 	return (distance_v);
+}
+
+void draw_col(t_data *env, int x, int h)
+{
+	int i;
+	int	start;
+
+	start = env->draw->heightmax / 2 - h / 2;
+	i = -1;
+	while (++i < env->draw->heightmax)
+	{
+		if (i < start)
+			my_mlx_pixel_put(env, x, i, BLACK);
+		else if (i >= start && i <= start + h)
+			my_mlx_pixel_put(env, x, i, MAROON);
+		else
+			my_mlx_pixel_put(env, x, i, WHITE);
+	}
 }
 
 void ft_draw(t_data *env)
@@ -406,20 +424,26 @@ void ft_draw(t_data *env)
 	t_draw	raycast;
 	int		x;
 	int		d;
+	float	h;
 	float	a;
 
 	env->img = &img;
 	env->draw = &raycast;
 	ft_init_draw(env);
-	a = env->player->angle - env->draw->angle / 2;
-	//mlx_new_image(env->mlx, env->draw->sizemax, env->draw->heightmax);
-	//mlx_get_data_addr(env->img->data, &env->img->bpp, &env->img->line_lght, &env->img->endian);
+	a = -env->draw->angle / 2;
+	
+	env->img->data = mlx_new_image(env->mlx, env->draw->sizemax, env->draw->heightmax);
+	env->img->addr = mlx_get_data_addr(env->img->data, &env->img->bpp, &env->img->line_lght, &env->img->endian);
 	x = -1;
 	while (++x <= env->draw->sizemax)
 	{
-		printf("ray number %d with angle %f deg %f rad\n", x, fixAng(a), degToRad(a));
-		d = ft_give_distance(env, fixAng(a));
-		printf("shorter distance is %d\n", d);
+		printf("ray number %d with angle %f\n", x, fixAng(env->player->angle + a));
+		d = ft_give_distance(env, fixAng(env->player->angle + a));
+		fprintf(stderr, "distorted distance = %d\n", d);
+		h = SIZE / (float)d * env->draw->distancetoplane;
+		printf("h = %f\n", h);
+		draw_col(env, x, h);
 		a += env->draw->sizeangle;
 	}
+	mlx_put_image_to_window(env->mlx, env->win, env->img->data, 0, 0);
 }

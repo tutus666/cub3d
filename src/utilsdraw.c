@@ -3,7 +3,7 @@
 void	my_mlx_pixel_put(t_data *env, int x, int y, unsigned int color)
 {
 	char	*dst;
-    if (x > 0 && y > 0 && x < 1000 && y < 1000)
+    if (x > 0 && y > 0 && x < env->draw->sizemax && y < env->draw->heightmax)
 	{
         //printf("ton x %d && ton y %d \n", x ,y);
 		dst = env->img->addr + (y * env->img->line_lght + x * \
