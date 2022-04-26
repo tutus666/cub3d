@@ -434,8 +434,8 @@ void ft_draw(t_data *env)
 	
 	env->img->data = mlx_new_image(env->mlx, env->draw->sizemax, env->draw->heightmax);
 	env->img->addr = mlx_get_data_addr(env->img->data, &env->img->bpp, &env->img->line_lght, &env->img->endian);
-	x = -1;
-	while (++x <= env->draw->sizemax)
+	x = env->draw->sizemax;
+	while (x--)
 	{
 		printf("ray number %d with angle %f\n", x, fixAng(env->player->angle + a));
 		d = ft_give_distance(env, fixAng(env->player->angle + a));

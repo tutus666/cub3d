@@ -1,50 +1,13 @@
 NO ./texture/Test/brick.xpm
 SO ./texture/Test/metal.xpm
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                       
-													   
-													   
-													   
-													   
-													   
-													   
-													   
-													   
 EA ./texture/Test/wood.xpm
-																											   
 WE ./texture/Test/pebbles.xpm
 F 255,100,0
 C 225,255,255
  
 111111111
-100000001
+100001001
 1000N0001
 100000001
-110000001
+100000001
 111111111

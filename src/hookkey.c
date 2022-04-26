@@ -9,7 +9,7 @@ int ft_cleanup(t_data *env)
 
 void ft_handle_rota_left(t_data *env)
 {
-	env->player->angle -= 5;
+	env->player->angle += 5;
 	env->player->angle = fixAng(env->player->angle);
 	printf("ton angle vaut %f \n", env->player->angle);
 	env->player->pdx = cos(degToRad(env->player->angle));
@@ -18,7 +18,7 @@ void ft_handle_rota_left(t_data *env)
 
 void ft_handle_rota_right(t_data *env)
 {
-	env->player->angle += 5;
+	env->player->angle -= 5;
 	env->player->angle = fixAng(env->player->angle);
 	printf("ton angle vaut %f \n", env->player->angle);
 	env->player->pdx = cos(degToRad(env->player->angle));
